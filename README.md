@@ -29,8 +29,6 @@ Error codes
 
 - [Python](https://www.python.org) used as the back-end programming language.
 - [PostgreSQL](https://www.postgresql.org) used as the relational database management.
-- [ElephantSQL](https://www.elephantsql.com/) used as the Postgres database.
-- [Heroku](https://www.heroku.com) used for hosting the deployed back-end site.
 - [Visual Studio Code](https://code.visualstudio.com/) used as a local IDE for development.
 - [Black](https://pypi.org/project/black/) used as a PEP8 compliant Python code formatter
 - [DBeaver](https://dbeaver.io/) used to produce ERDs and help plan the database models
@@ -38,6 +36,7 @@ Error codes
 ## Database Design
 
 An Entity Relationship Diagram (ERD) was created using [DBeaver](https://dbeaver.io/) in order to visualize the database architecture before creating Django models.
+![ERD](documentation/erd.png)
 
 ## Testing
 
