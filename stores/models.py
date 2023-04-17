@@ -12,6 +12,10 @@ DAYS_OF_WEEK = [
 
 
 class Store(models.Model):
+    """
+    Store model with name and address fields.
+    """
+
     store_name = models.CharField(max_length=100)
     store_address = models.CharField(max_length=255)
 
@@ -20,9 +24,16 @@ class Store(models.Model):
 
 
 class OpeningHours(models.Model):
+    """
+    Opening hours model, related to store through store_id foreign key.
+    """
+
     store_id = models.ForeignKey(
         Store, related_name="opening_times", on_delete=models.CASCADE
     )
     day_of_week = models.CharField(max_length=10, choices=DAYS_OF_WEEK)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
+
+    class Meta:
+        unique_together = ["store_id", "day_of_week"]
