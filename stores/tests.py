@@ -29,7 +29,7 @@ class StoreDetailViewTests(APITestCase):
     def test_can_retrieve_store_with_valid_id(self):
         response = self.client.get("/api/v1/stores/1/")
         self.assertEqual(response.data["store_name"], "A Test Store")
-        self.assertEqual(response.get(store_name="store_name"), "A Test Store")
+        self.assertEqual(response.data["store_address"], "1 Test Street")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_cannot_retrieve_store_with_invalid_id(self):
@@ -53,4 +53,86 @@ class StoreDetailViewTests(APITestCase):
             {"store_name": "Another Store", "store_address": "2 Test Street"},
         )
         self.assertEqual(len(Store.objects.all()), 0)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class OpeningHoursListCreateViewTests(APITestCase):
+    def setUp(self):
+        test_store = Store.objects.create(
+            store_name="A Test Store", store_address="1 Test Street"
+        )
+        OpeningHours.objects.create(
+            store_id=test_store,
+            day_of_week="mon",
+            opening_time="09:00:00",
+            closing_time="12:00:00",
+        )
+
+    def test_opening_hours_list_view(self):
+        response = self.client.get("/api/v1/times/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_can_create_opening_times(self):
+        self.assertEqual(len(OpeningHours.objects.all()), 1)
+        response = self.client.post(
+            "/api/v1/times/",
+            {
+                "store_id": 1,
+                "day_of_week": "tues",
+                "opening_time": "09:00:00",
+                "closing_time": "12:00:00",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(OpeningHours.objects.all()), 2)
+
+
+class OpeningHoursDetailViewTests(APITestCase):
+    def setUp(self):
+        test_store = Store.objects.create(
+            store_name="A Test Store", store_address="1 Test Street"
+        )
+        OpeningHours.objects.create(
+            store_id=test_store,
+            day_of_week="mon",
+            opening_time="09:00:00",
+            closing_time="12:00:00",
+        )
+
+    def test_can_retrieve_opening_times_with_valid_id(self):
+        response = self.client.get("/api/v1/times/1/")
+        self.assertEqual(response.data["store_id"], 1)
+        self.assertEqual(response.data["day_of_week"], "mon")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_cannot_retrieve_opening_times_with_invalid_id(self):
+        response = self.client.get("/api/v1/times/999/")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_opening_times_can_be_updated(self):
+        response = self.client.put(
+            "/api/v1/times/1/",
+            {
+                "store_id": 1,
+                "day_of_week": "tues",
+                "opening_time": "09:00:00",
+                "closing_time": "12:00:00",
+            },
+        )
+        store = OpeningHours.objects.get(pk=1)
+        self.assertEqual(store.day_of_week, "tues")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_opening_hours_can_be_deleted(self):
+        self.assertEqual(len(OpeningHours.objects.all()), 1)
+        response = self.client.delete(
+            "/api/v1/times/1/",
+            {
+                "store_id": 1,
+                "day_of_week": "mon",
+                "opening_time": "09:00:00",
+                "closing_time": "12:00:00",
+            },
+        )
+        self.assertEqual(len(OpeningHours.objects.all()), 0)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
