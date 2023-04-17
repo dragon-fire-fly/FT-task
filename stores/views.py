@@ -1,3 +1,5 @@
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .serializers import OpeningHoursSerializer, StoreSerializer
 from .models import Store, OpeningHours
@@ -6,6 +8,11 @@ from .models import Store, OpeningHours
 class StoreListCreate(ListCreateAPIView):
     serializer_class = StoreSerializer
     queryset = Store.objects.all()
+    filter_backends = [
+        filters.OrderingFilter,
+        DjangoFilterBackend,
+    ]
+    filterset_fields = ["store_name", "store_address"]
 
 
 class TimesListCreate(ListCreateAPIView):

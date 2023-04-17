@@ -37,3 +37,6 @@ class OpeningHours(models.Model):
 
     class Meta:
         unique_together = ["store_id", "day_of_week"]
+
+    def __str__(self):
+        return f"Opening hours for {self.day_of_week}"
