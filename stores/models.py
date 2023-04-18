@@ -22,8 +22,8 @@ class Store(models.Model):
     Store model with name and address fields.
     """
 
-    store_name = models.CharField(max_length=100)
-    store_address = models.CharField(max_length=255)
+    store_name = models.CharField(max_length=100, unique=True)
+    store_address = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return f"Store: {self.store_name}"
