@@ -14,17 +14,30 @@ This app is a simple Django REST API which allows logged-in, authenticated users
 
 The listed HTTP requests can be performed by visiting the corresponding URI routes.
 
-| HTTP   | URI         | CRUD Operation            | View name |
-| ------ | ----------- | ------------------------- | --------- |
-| GET    | /stores/    | list all stores           | LIST      |
-| POST   | /stores/    | create a new store        | LIST      |
-| GET    | /stores/id/ | retrieve a specific store | DETAIL    |
-| PUT    | /stores/id/ | update a specific store   | DETAIL    |
-| DELETE | /stores/id/ | delete a specific store   | DETAIL    |
+| HTTP   | URI           | CRUD Operation                         | View name |
+| ------ | ------------- | -------------------------------------- | --------- |
+| GET    | /stores/      | list all stores                        | LIST      |
+| POST   | /stores/      | create a new store                     | LIST      |
+| GET    | /stores/{id}/ | retrieve a specific store              | DETAIL    |
+| PUT    | /stores/{id}/ | update a specific store                | DETAIL    |
+| DELETE | /stores/{id}/ | delete a specific store                | DETAIL    |
+| GET    | /times/       | list all opening hours                 | LIST      |
+| POST   | /times/       | create a opening hour entry            | LIST      |
+| GET    | /stores/{id}/ | retrieve a specific opening hour entry | DETAIL    |
+| PUT    | /stores/{id}/ | update a specific opening hour entry   | DETAIL    |
+| DELETE | /stores/{id}/ | delete a specific opening hour entry   | DETAIL    |
 
 ### Authentication
 
 The project features Django REST framework's token authentication system to authenticate users. It also uses build in django permissions classes to allow all logged in, authenticated users to perform all actions on stores and opening hour entries (create, retreive, update and delete).
+
+### Validation
+
+Most of the validation invoked is through the default behaviour of Django REST framework based on the database models. This includes checking for validity of data related to the selected field type (e.g. str, int, email, time, etc.) and fields left blank when they are required.
+
+There is also validation to check for uniqueness of data (store name and store address) and unique together (between store and day of the week). A validation error will be raised if this data or combination of data is not unique.
+
+A custom validation class was created to check that opening hours are valid. This ensures that the closing time of a store is after its opening time, and that the opening and closing times are different from eachother. A custom validation error is returned if this is not the case.
 
 ### Pagination
 
