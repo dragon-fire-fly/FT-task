@@ -116,7 +116,43 @@ class OpeningHoursListCreateViewTests(APITestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        store = OpeningHours.objects.get(pk=2)
+        self.assertEqual(store.day_of_week, "tues")
         self.assertEqual(len(OpeningHours.objects.all()), 2)
+
+    def test_closing_time_cannot_be_same_as_opening_time(self):
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            "/api/v1/times/",
+            {
+                "store_id": 1,
+                "day_of_week": "weds",
+                "opening_time": "09:00:00",
+                "closing_time": "09:00:00",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json()["non_field_errors"][0],
+            "Opening and closing times must be different",
+        )
+
+    def test_closing_time_cannot_be_earlier_than_opening_time(self):
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            "/api/v1/times/",
+            {
+                "store_id": 1,
+                "day_of_week": "weds",
+                "opening_time": "12:00:00",
+                "closing_time": "09:00:00",
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json()["non_field_errors"][0],
+            "A store cannot close before it has opened!",
+        )
 
 
 class OpeningHoursDetailViewTests(APITestCase):
