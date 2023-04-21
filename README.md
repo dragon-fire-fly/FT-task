@@ -23,9 +23,9 @@ The listed HTTP requests can be performed by visiting the corresponding URI rout
 | DELETE | /stores/{id}/ | delete a specific store                | DETAIL    |
 | GET    | /times/       | list all opening hours                 | LIST      |
 | POST   | /times/       | create a opening hour entry            | LIST      |
-| GET    | /stores/{id}/ | retrieve a specific opening hour entry | DETAIL    |
-| PUT    | /stores/{id}/ | update a specific opening hour entry   | DETAIL    |
-| DELETE | /stores/{id}/ | delete a specific opening hour entry   | DETAIL    |
+| GET    | /times/{id}/ | retrieve a specific opening hour entry | DETAIL    |
+| PUT    | /times/{id}/ | update a specific opening hour entry   | DETAIL    |
+| DELETE | /times/{id}/ | delete a specific opening hour entry   | DETAIL    |
 
 ### Authentication
 
